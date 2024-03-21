@@ -7,8 +7,8 @@ import NetworkSwitcher from './NetworkSwitcher';
 import NavElement from './nav-element';
 import { useRouter } from 'next/router'; 
 // import { useParams } from 'next/navigation';
-import Elon from "./cliff.jpeg"
-import BImage from "./brick.jpeg"
+import SOLSniffer from "./solsniffer.jpeg"
+import BImage from "./solsniffer.jpeg"
 import Image from 'next/image';
 
 const WalletMultiButtonDynamic = dynamic(
@@ -18,9 +18,8 @@ const WalletMultiButtonDynamic = dynamic(
 
 export const AppBar: React.FC = () => {
   const router = useRouter();
-  let curr_url = router.pathname
-  console.log("current",curr_url);
-  let imageD = curr_url == "/" ? "" : curr_url == "/brick" ? BImage : Elon
+  // let curr_url = router.pathname
+  // let imageD = curr_url == "/" ? "" : curr_url == "/brick" ? BImage : Elon
   const { autoConnect, setAutoConnect } = useAutoConnect();
   const [isNavOpen, setIsNavOpen] = useState(false);
   return (
@@ -28,8 +27,8 @@ export const AppBar: React.FC = () => {
       {/* NavBar / Header */}
       <div className="navbar flex h-20 flex-row md:mb-2 shadow-lg bg-black text-neutral-content border-b border-zinc-600 bg-opacity-66">
         <div className="navbar-start align-items-center">
-       <Image src={imageD }
-       alt="BURN Token"
+       <Image src={SOLSniffer }
+       alt="SOLSniffer Token"
        width={80}
        height={80}
        style={{borderRadius:"10px"}}
@@ -39,39 +38,12 @@ export const AppBar: React.FC = () => {
 
         <WalletMultiButtonDynamic className="btn-ghost btn-sm relative flex md:hidden text-lg " />
         </div>
-
-        {/* Nav Links */}
-        {/* Wallet & Settings */}
         <div className="navbar-end">
           <div className="hidden md:inline-flex align-items-center justify-items gap-6">
-          {/* <NavElement
-            label="Home"
-            href="/"
-            navigationStarts={() => setIsNavOpen(false)}
-          /> */}
-          {/* <NavElement
-            label="Basics"
-            href="/basics"
-            navigationStarts={() => setIsNavOpen(false)}
-          /> */}
+  
           <WalletMultiButtonDynamic className="btn-ghost btn-sm rounded-btn text-lg mr-6 " />
         </div>
-          {/* <label
-              htmlFor="my-drawer"
-              className="btn-gh items-center justify-between md:hidden mr-6"
-              onClick={() => setIsNavOpen(!isNavOpen)}>
-              <div className="HAMBURGER-ICON space-y-2.5 ml-5">
-              <div className={`h-0.5 w-8 bg-purple-600 ${isNavOpen ? 'hidden' : ''}`} />
-              <div className={`h-0.5 w-8 bg-purple-600 ${isNavOpen ? 'hidden' : ''}`} />
-              <div className={`h-0.5 w-8 bg-purple-600 ${isNavOpen ? 'hidden' : ''}`} />
-            </div>
-            <div className={`absolute block h-0.5 w-8 animate-pulse bg-purple-600 ${isNavOpen ? "" : "hidden"}`}
-              style={{ transform: "rotate(45deg)" }}>
-            </div>
-            <div className={`absolute block h-0.5 w-8 animate-pulse bg-purple-600 ${isNavOpen ? "" : "hidden"}`}
-              style={{ transform: "rotate(135deg)" }}>
-            </div>
-        </label> */}
+
       <div>
         <span className="absolute block h-0.5 w-12 bg-zinc-600 rotate-90 right-14"></span>
       </div>
@@ -85,10 +57,10 @@ export const AppBar: React.FC = () => {
           <ul tabIndex={0} className="p-2 shadow menu dropdown-content bg-base-100 rounded-box sm:w-52">
             <li>
               <div className="form-control bg-opacity-100">
-                <label className="cursor-pointer label">
+                {/* <label className="cursor-pointer label">
                   <a>Autoconnect</a>
                   <input type="checkbox" checked={autoConnect} onChange={(e) => setAutoConnect(e.target.checked)} className="toggle" />
-                </label>
+                </label> */}
                 <NetworkSwitcher />
               </div>
             </li>

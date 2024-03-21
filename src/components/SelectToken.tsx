@@ -20,14 +20,14 @@ export const SelectToken: FC = () => {
             console.log('error', ` failed! ${error?.message}`);
         }
     }, [publicKey, notify]);
-    const onClickElon = useCallback(async () => {
+    const onClickBurn = useCallback(async () => {
        if (!publicKey) throw new Error('Wallet not connected!');
-       router.push("/cliff"); 
+       router.push("/SOLSniffer"); 
     }, [publicKey]);
-    const onClickBrick = useCallback(async () => {
+    const onClickCollectFee = useCallback(async () => {
      
      if (!publicKey) throw new Error('Wallet not connected!');
-     router.push("/brick");    
+     router.push("/fee");    
     }, [publicKey]);
     return (
         <div className="flex flex-row justify-center">
@@ -37,20 +37,20 @@ export const SelectToken: FC = () => {
              {publicKey && publicKey ? <>
                 <button
                     className="group w-60 m-2 btn animate-pulse bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black"
-                    onClick={onClickElon} disabled={!publicKey}
+                    onClick={onClickBurn} disabled={!publicKey}
                 >
                   <span className="block group-disabled:hidden" > 
-                        Burn CLIFFORD
+                        Burn SOLSniffer
                     </span>
                 </button>
-                <button
+                {/* <button
                     className="group w-60 m-2 btn animate-pulse bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black"
-                    onClick={onClickBrick} disabled={!publicKey}
+                    onClick={onClickCollectFee} disabled={!publicKey}
                 >
                   <span className="block group-disabled:hidden" > 
-                        Burn Brick
+                        Collect Fee
                     </span>
-                </button>
+                </button> */}
              </> : <>      <button
                     className="group w-60 m-2 btn animate-pulse bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black"
                     onClick={onClick} disabled={!publicKey}

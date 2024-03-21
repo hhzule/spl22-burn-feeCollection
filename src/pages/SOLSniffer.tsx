@@ -6,10 +6,10 @@ const Basics: NextPage = (props) => {
   return (
     <div>
       <Head>
-        <title>Clifford Inu BURN</title>
+        <title>SOLSniffer BURN</title>
         <meta
           name="description"
-          content="Clifford Inu BURN"
+          content="SOLSniffer BURN"
         />
       </Head>
       <ElonView />
