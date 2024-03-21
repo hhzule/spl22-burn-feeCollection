@@ -196,7 +196,7 @@ const onClick = () => {
          
           <div className="flex flex-row justify-center">
           <div className='text-slate-600 mr-2'>
-               Clifford Inu {" "}
+                SOLSniffer {" "}
               </div>
             <div> Total Supply : {" "}
               {(supply || 0).toLocaleString()}
