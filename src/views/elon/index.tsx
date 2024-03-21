@@ -24,8 +24,8 @@ const MINT_DECIMALS = 6; // Value for USDC-Dev from spl-token-faucet.com | repla
 
 
 export const ElonView: FC = ({ }) => {
-  const { getUserSOLBalance } = useUserSOLBalanceStore()
-  const { getUserStakeBalance } = useTokenBalance()
+  const { balance ,getUserSOLBalance } = useUserSOLBalanceStore()
+  const { TkBalance,getUserStakeBalance } = useTokenBalance()
     const router = useRouter();
     const { publicKey, sendTransaction } = useWallet();
   const { networkConfiguration } = useNetworkConfiguration();
@@ -35,9 +35,13 @@ export const ElonView: FC = ({ }) => {
   const walletW = useAnchorWallet();
   const [burnTrx, setBurnTrx] = useState("")
   const [supply, setSupply] = useState("")
+  const [tkBal, setTKbal] = useState(0)
   const [amount, setAmount] = useState("")
   const [connection, setConnection] = useState(null)
   const [loading, setLoading] = useState(false)
+  // const TKbalance = useTokenBalance((s) => s.balance)
+// console.log('TKbalance',TKbalance);
+// const balance = useUserSOLBalanceStore((s) => s.balance)
 
   useEffect(() => {
     console.log("useEffect", network)
@@ -53,7 +57,7 @@ if(network == "mainnet-beta"){
   }
 }else{
   if (wallet.publicKey ) {
-    console.log(wallet.publicKey.toBase58())
+    // console.log(wallet.publicKey.toBase58())
     // console.log("network devnet", network)
     // const connection = wconn
     const connection = new Connection(clusterApiUrl("devnet"));
@@ -67,11 +71,12 @@ if(network == "mainnet-beta"){
   useEffect(() => {
     // console.log("totalSupply")
     if(connection){
-      // console.log("totalSupply")
+      console.log("balance", balance)
+        console.log("TkBalance", TkBalance)
       getTotalSupply()
       getUserSOLBalance(wallet.publicKey, connection)
       getUserStakeBalance(wallet.publicKey, connection)
-      // getTKBal()
+      setTKbal(TkBalance)
    
     }
 
@@ -90,8 +95,7 @@ if(network == "mainnet-beta"){
     }  // return totalSupply
   }
 
-const TKbalance = useTokenBalance((s) => s.balance)
-const balance = useUserSOLBalanceStore((s) => s.balance)
+
   
  const burnTk = async () =>{
 setLoading(true);
@@ -114,8 +118,15 @@ if (Number(amount)< 1) {
   setLoading(false);
   return;
 }
-
-if (TKbalance < Number(amount)) {
+ console.log(`TkBalance`, TkBalance);
+ if (TkBalance == undefined) {
+  notify({ type: 'error', message: `Token account doesn't exist ` });
+  console.log('error', `User Token account doesn't exist `);
+  setLoading(false);
+  setAmount("")
+  return;
+}
+if (TkBalance < Number(amount)) {
   notify({ type: 'error', message: `Not enough Token to burn` });
   console.log('error', `Enter amount`);
   setLoading(false);
@@ -216,7 +227,7 @@ const onClick = () => {
            {wallet &&
           <div className="flex flex-row justify-center">
             <div> Wallet SOLSNiffer Balance : {""}
-              {( Number(TKbalance)  || 0).toLocaleString()}
+              {( Number(TkBalance)  || 0).toLocaleString()}
               </div>
               <div className='text-slate-600 ml-2'>
                 SOLSniffer
