@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { HomeView } from "../views";
+// import { HomeView } from "../views";
 
 const Basics: NextPage = (props) => {
   return (
@@ -12,7 +12,7 @@ const Basics: NextPage = (props) => {
           content="BRICK PHONE BURN"
         />
       </Head>
-      <HomeView />
+      {/* <HomeView /> */}
     </div>
   );
 };
