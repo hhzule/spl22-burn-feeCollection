@@ -9,7 +9,7 @@ import {
 } from "@solana/web3.js";
 
 // Wallet
-import { createBurnInstruction,TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID, getAssociatedTokenAddress ,getMint} from "@solana/spl-token";
+import { createBurnInstruction,AccountLayout,TOKEN_2022_PROGRAM_ID, getAssociatedTokenAddress ,getMint} from "@solana/spl-token";
 import { useWallet, useConnection, useAnchorWallet } from '@solana/wallet-adapter-react';
 import { notify } from "../../utils/notifications";
 import { useRouter } from 'next/router';
@@ -19,7 +19,7 @@ import useUserSOLBalanceStore from '../../stores/useUserSOLBalanceStore';
 import useTokenBalance from '../../stores/useTokenBalance';
 import {  useNetworkConfiguration } from '../../contexts/NetworkConfigurationProvider';
 //constants
-const MINT_ADDRESS = "2hbJ4H9BqGhEL4jWMiaqcsSUBzwm8ETjUsqghTd73KMy"
+const MINT_ADDRESS = "G6o1ncUg59EDBMkyhGHAXHM1CicdpqhM1GAZSpSkHwau"
 const MINT_DECIMALS = 6; // Value for USDC-Dev from spl-token-faucet.com | replace with the no. decimals of mint you would like to burn
 
 
@@ -35,11 +35,11 @@ export const ElonView: FC = ({ }) => {
   const walletW = useAnchorWallet();
   const [burnTrx, setBurnTrx] = useState("")
   const [supply, setSupply] = useState("")
-  const [tkBal, setTKbal] = useState(0)
   const [amount, setAmount] = useState("")
+  const [TKbalance, setTKbalance] = useState(0)
   const [connection, setConnection] = useState(null)
   const [loading, setLoading] = useState(false)
-  // const TKbalance = useTokenBalance((s) => s.balance)
+  let TKbalan = useTokenBalance((s) => s.TkBalance)
 // console.log('TKbalance',TKbalance);
 // const balance = useUserSOLBalanceStore((s) => s.balance)
 
@@ -48,20 +48,14 @@ export const ElonView: FC = ({ }) => {
 if(network == "mainnet-beta"){
   if (wallet.publicKey ) {
     console.log(wallet.publicKey.toBase58())
-    // console.log("network mainnet", network)
-    const connection = new Connection("https://mainnet.helius-rpc.com/?api-key=78c69964-e500-4354-8f43-eec127b47bd7");
-  // const connection = new Connection("https://devnet.");
- 
+    const connection = new Connection("https://mainnet.helius-rpc.com/?api-key=78c69964-e500-4354-8f43-eec127b47bd7"); 
     setConnection(connection)
 
   }
 }else{
   if (wallet.publicKey ) {
-    // console.log(wallet.publicKey.toBase58())
-    // console.log("network devnet", network)
     // const connection = wconn
     const connection = new Connection(clusterApiUrl("devnet"));
- 
     setConnection(connection)
 
   } 
@@ -69,18 +63,16 @@ if(network == "mainnet-beta"){
 
   }, [wallet.publicKey,network])
   useEffect(() => {
-    // console.log("totalSupply")
     if(connection){
       console.log("balance", balance)
         console.log("TkBalance", TkBalance)
       getTotalSupply()
       getUserSOLBalance(wallet.publicKey, connection)
       getUserStakeBalance(wallet.publicKey, connection)
-      setTKbal(TkBalance)
-   
+      setTKbalance(TKbalan)
     }
 
-  }, [connection])
+  }, [connection, TKbalan])
   
 
   const  getTotalSupply = async() =>{
@@ -144,9 +136,9 @@ try {
    TOKEN_2022_PROGRAM_ID
    );
 //  console.log(`    ✅ - Associated Token Account Address: ${account.toString()}`);
-    const createNewTokenTransaction = new Transaction().add(
+    const createBurnTransaction = new Transaction().add(
       createBurnInstruction(
-            account, // PublicKey of Owner's Associated Token Account
+      account, // PublicKey of Owner's Associated Token Account
        new PublicKey(MINT_ADDRESS), // Public Key of the Token Mint Address
        wallet.publicKey, // Public Key of Owner's Wallet
        Number(amount) * (10**MINT_DECIMALS), // Number of tokens to burn
@@ -155,12 +147,14 @@ try {
     TOKEN_2022_PROGRAM_ID
       )
     )
-    const signature = await sendTransaction(createNewTokenTransaction, connection);
+    const signature = await sendTransaction(createBurnTransaction, connection);
 
   console.log(`signature`, signature);
      setBurnTrx(`https://explorer.solana.com/tx/${signature}?cluster=mainnet-beta`)
     //  console.log(signature);
-    await getTotalSupply()
+
+    setTKbalance(Number(TkBalance) -  Number(amount))
+
     notify({ type: 'success', message: 'Transaction successful!', txid: signature });
     setLoading(false);
     setAmount("")
@@ -194,10 +188,6 @@ const onClick = () => {
         </div>
       <div className="md:hero-content h-[300px] justify-around flex flex-col">
         <div className='mt-3'>
-        {/* <div className='text-sm font-normal align-bottom text-right text-slate-600 mt-4'>v{pkg.version}</div> */}
-        {/* <h1 className="text-center text-3xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4">
-         Admin
-        </h1> */}
         </div>
     
         <div className="flex flex-col justify-between h-[120px] relative group items-center">
@@ -227,7 +217,7 @@ const onClick = () => {
            {wallet &&
           <div className="flex flex-row justify-center">
             <div> Wallet SOLSNiffer Balance : {""}
-              {( Number(TkBalance)  || 0).toLocaleString()}
+              {( Number(TKbalance)  || 0).toLocaleString()}
               </div>
               <div className='text-slate-600 ml-2'>
                 SOLSniffer

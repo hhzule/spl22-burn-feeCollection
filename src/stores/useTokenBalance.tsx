@@ -14,7 +14,7 @@ const useTokenBalance = create<UserSOLBalanceStore>((set, _get) => ({
   getUserStakeBalance: async (publicKey, connection) => {
     let TkBalance;
     let finalBal;
-    const TOKEN_MINT = new PublicKey("2hbJ4H9BqGhEL4jWMiaqcsSUBzwm8ETjUsqghTd73KMy")
+    const TOKEN_MINT = new PublicKey("G6o1ncUg59EDBMkyhGHAXHM1CicdpqhM1GAZSpSkHwau")
 
     try {
         TkBalance = await connection.getTokenAccountsByOwner(publicKey,  {
