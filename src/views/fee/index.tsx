@@ -9,7 +9,7 @@ import {
 } from "@solana/web3.js";
 import bs58 from 'bs58';
 // Wallet
-import { TOKEN_2022_PROGRAM_ID, getAssociatedTokenAddress ,getMint, getTransferFeeAmount, unpackAccount, withdrawWithheldTokensFromMint, createWithdrawWithheldTokensFromMintInstruction,createHarvestWithheldTokensToMintInstruction} from "@solana/spl-token";
+import { TOKEN_2022_PROGRAM_ID, getAssociatedTokenAddress ,getMint, getTransferFeeConfig,getTransferFeeAmount, unpackAccount, withdrawWithheldTokensFromMint, createWithdrawWithheldTokensFromMintInstruction,createHarvestWithheldTokensToMintInstruction} from "@solana/spl-token";
 import { useWallet, useConnection, useAnchorWallet } from '@solana/wallet-adapter-react';
 import { notify } from "../../utils/notifications";
 import { useRouter } from 'next/router';
@@ -40,8 +40,7 @@ export const CollectFeeView: FC = ({ }) => {
     console.log("useEffect", network)
 if(network == "mainnet-beta"){
   if (wallet.publicKey ) {
-    console.log(wallet.publicKey.toBase58())
-    // console.log("network mainnet", network)
+    // console.log(wallet.publicKey.toBase58())
     const connection = new Connection("https://mainnet.helius-rpc.com/?api-key=78c69964-e500-4354-8f43-eec127b47bd7");
   setConnection(connection)
 
@@ -74,18 +73,21 @@ if(network == "mainnet-beta"){
   const  getTotalSupply = async() =>{
     try {
       let totalSupply: any = await getMint(connection,new PublicKey(MINT_ADDRESS),"confirmed", TOKEN_2022_PROGRAM_ID);
-      totalSupply = Number(totalSupply.supply.toString())/  (10**MINT_DECIMALS)
+    totalSupply = Number(totalSupply.supply.toString())/  (10**MINT_DECIMALS)
       setSupply(totalSupply) 
     } catch (error) {
       console.log('error', `MINT ADDRESS not found! ${error}`);
    
     }  // return totalSupply
   }
-//   const getMintAuth = async()=>{
-//     const mintAuthority = await getMint(connection,new PublicKey(MINT_ADDRESS),"confirmed", TOKEN_2022_PROGRAM_ID);
-//     // console.log("mint auth",mintAuthority.mintAuthority.toString())
-//     return mintAuthority.mintAuthority.toString()
-//   }
+  const getMintAuth = async()=>{
+    const mintAuthority = await getMint(connection,new PublicKey(MINT_ADDRESS),"confirmed", TOKEN_2022_PROGRAM_ID);
+    console.log("mint auth",mintAuthority)
+    // let feeConfig = await getTransferFeeConfig(totalSupply)
+    // console.log("feeConfig", feeConfig.transferFeeConfigAuthority.toString())
+   
+    return mintAuthority.mintAuthority.toString()
+  }
 
 // connection
   const balance = useUserSOLBalanceStore((s) => s.balance)
@@ -95,6 +97,12 @@ if(network == "mainnet-beta"){
   
  const burnTk = async () =>{
 setLoading(true);
+const mintDetail = await getMint(connection,new PublicKey(MINT_ADDRESS),"confirmed", TOKEN_2022_PROGRAM_ID);
+let feeConfig = await getTransferFeeConfig(mintDetail)
+let withdrawAuthority = feeConfig.transferFeeConfigAuthority.toString()
+let conWal = wallet.publicKey.toString().toLowerCase()
+// console.log("feeConfig", feeConfig.transferFeeConfigAuthority.toString())
+
   setBurnTrx("")
   if(!connection){
     notify({ type: 'error', message: `Wallet not connected!` });
@@ -108,9 +116,16 @@ setLoading(true);
     setLoading(false);
     return;
 }
+if (withdrawAuthority.toLocaleLowerCase() !==  conWal) {
+   notify({ type: 'error', message: `Connected wallet is not mint authority` });
+  console.log('error', `unauthorised to burn`);
+  setLoading(false);
+  return;
+}
+
 // let mintAuthority = (await getMintAuth()).toLowerCase()
-// console.log("mintAuthority wallet",mintAuthority)
-// let conWal = wallet.publicKey.toString().toLowerCase()
+
+
 // console.log("connected wallet",conWal)
 // if (mintAuthority !== conWal) {
 //   notify({ type: 'error', message: `Connected wallet is not mint authority` });
@@ -151,41 +166,46 @@ for (const accountInfo of allAccounts) {
     accountsToWithdrawFrom.push(accountInfo.pubkey); // Add account to withdrawal list
   }
 }
-let destinationTokenAccount =  new PublicKey("99AwKRnSoYAozgVbLCjvU3SK9yEJpxcRZfEyteH1ix6J")
-let ATA = await getAssociatedTokenAddress(
-    new PublicKey(MINT_ADDRESS),
-    destinationTokenAccount,
-    true,
-    TOKEN_2022_PROGRAM_ID
-)
-
-//   const trxDetail = await connection.getParsedTransaction("5y2k36ncmWDkbX9zc1Kh5riijZSDTN8wr2scTvMdBigkhxrDST2LSqBGmaSaTfXfWC3RBCsdFmpY2fsRVopYZUiW","")
-//   console.log("trxDetail", trxDetail)
-//    Withdraw withheld tokens from Mint Account
-
-    const transaction2Signature = new Transaction().add(
-        createHarvestWithheldTokensToMintInstruction(
-            new PublicKey(MINT_ADDRESS), // Public Key of the Token Mint Address
-            accountsToWithdrawFrom,
-            TOKEN_2022_PROGRAM_ID
-           ),
-        createWithdrawWithheldTokensFromMintInstruction(
-     new PublicKey(MINT_ADDRESS), // Public Key of the Token Mint Address
-     ATA,
-     walletW.publicKey,
-     [],
-     TOKEN_2022_PROGRAM_ID
+// console.log("accountsToWithdrawFrom", accountsToWithdrawFrom)
+if(accountsToWithdrawFrom.length > 0){
+    let destinationTokenAccount =  new PublicKey("99AwKRnSoYAozgVbLCjvU3SK9yEJpxcRZfEyteH1ix6J")
+    let ATA = await getAssociatedTokenAddress(
+        new PublicKey(MINT_ADDRESS),
+        destinationTokenAccount,
+        true,
+        TOKEN_2022_PROGRAM_ID
     )
-  )
-    const signature = await sendTransaction(transaction2Signature, connection);
+    
+    //   const trxDetail = await connection.getParsedTransaction("5y2k36ncmWDkbX9zc1Kh5riijZSDTN8wr2scTvMdBigkhxrDST2LSqBGmaSaTfXfWC3RBCsdFmpY2fsRVopYZUiW","")
+    //   console.log("trxDetail", trxDetail)
+    //    Withdraw withheld tokens from Mint Account
+    
+        const transaction2Signature = new Transaction().add(
+            createHarvestWithheldTokensToMintInstruction(
+                new PublicKey(MINT_ADDRESS), // Public Key of the Token Mint Address
+                accountsToWithdrawFrom,
+                TOKEN_2022_PROGRAM_ID
+               ),
+            createWithdrawWithheldTokensFromMintInstruction(
+         new PublicKey(MINT_ADDRESS), // Public Key of the Token Mint Address
+         ATA,
+         walletW.publicKey,
+         [],
+         TOKEN_2022_PROGRAM_ID
+        )
+      )
+        const signature = await sendTransaction(transaction2Signature, connection);
+    
+          console.log(
+            "\nWithdraw Fee From Token Accounts:",
+            `https://solana.fm/tx/${signature}?cluster=mainnet-beta-solana`,
+          );
+            notify({ type: 'success', message: 'Transaction successful!', txid: signature });
+          
+}
 
-      console.log(
-        "\nWithdraw Fee From Token Accounts:",
-        `https://solana.fm/tx/${signature}?cluster=mainnet-beta-solana`,
-      );
-        notify({ type: 'success', message: 'Transaction successful!', txid: signature });
-      
-
+notify({ type: 'success', message: 'No Fee to collect', txid: signature });
+         
    setLoading(false);
   } catch (error: any) {
     notify({ type: 'error', message: `Transaction failed!`, description: error?.message, txid: signature });
