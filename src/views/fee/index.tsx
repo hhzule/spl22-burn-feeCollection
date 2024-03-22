@@ -162,7 +162,7 @@ let ATA = await getAssociatedTokenAddress(
 //   const trxDetail = await connection.getParsedTransaction("5y2k36ncmWDkbX9zc1Kh5riijZSDTN8wr2scTvMdBigkhxrDST2LSqBGmaSaTfXfWC3RBCsdFmpY2fsRVopYZUiW","")
 //   console.log("trxDetail", trxDetail)
 //    Withdraw withheld tokens from Mint Account
-if(true){
+
     const transaction2Signature = new Transaction().add(
         createHarvestWithheldTokensToMintInstruction(
             new PublicKey(MINT_ADDRESS), // Public Key of the Token Mint Address
@@ -185,7 +185,7 @@ if(true){
       );
         notify({ type: 'success', message: 'Transaction successful!', txid: signature });
       
-}
+
    setLoading(false);
   } catch (error: any) {
     notify({ type: 'error', message: `Transaction failed!`, description: error?.message, txid: signature });
