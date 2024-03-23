@@ -7,8 +7,7 @@ import NetworkSwitcher from './NetworkSwitcher';
 import NavElement from './nav-element';
 import { useRouter } from 'next/router'; 
 // import { useParams } from 'next/navigation';
-import SOLSniffer from "./solsniffer.jpeg"
-import BImage from "./solsniffer.jpeg"
+import SOLSniffer from "./solsniffer.png"
 import Image from 'next/image';
 
 const WalletMultiButtonDynamic = dynamic(
