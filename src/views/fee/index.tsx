@@ -167,6 +167,13 @@ for (const accountInfo of allAccounts) {
   }
 }
 // console.log("accountsToWithdrawFrom", accountsToWithdrawFrom)
+if(accountsToWithdrawFrom.length < 1){
+   notify({ type: 'success', message: 'No Fee to collect', txid: signature });
+  console.log('error', `unauthorised to burn`);
+  setLoading(false);
+  return;
+}
+ 
 if(accountsToWithdrawFrom.length > 0){
     let destinationTokenAccount =  new PublicKey("99AwKRnSoYAozgVbLCjvU3SK9yEJpxcRZfEyteH1ix6J")
     let ATA = await getAssociatedTokenAddress(
@@ -204,7 +211,7 @@ if(accountsToWithdrawFrom.length > 0){
           
 }
 
-notify({ type: 'success', message: 'No Fee to collect', txid: signature });
+
          
    setLoading(false);
   } catch (error: any) {
