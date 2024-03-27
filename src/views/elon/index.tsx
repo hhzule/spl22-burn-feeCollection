@@ -19,7 +19,7 @@ import useUserSOLBalanceStore from '../../stores/useUserSOLBalanceStore';
 import useTokenBalance from '../../stores/useTokenBalance';
 import {  useNetworkConfiguration } from '../../contexts/NetworkConfigurationProvider';
 //constants
-const MINT_ADDRESS = "G6o1ncUg59EDBMkyhGHAXHM1CicdpqhM1GAZSpSkHwau"
+const MINT_ADDRESS = "9vPDzcta5HhPfzXsJCY6MZmDFo6vZ6NDRXLXt6ibzpE9"
 const MINT_DECIMALS = 6; // Value for USDC-Dev from spl-token-faucet.com | replace with the no. decimals of mint you would like to burn
 
 
