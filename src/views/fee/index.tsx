@@ -175,7 +175,7 @@ if(accountsToWithdrawFrom.length < 1){
 }
  
 if(accountsToWithdrawFrom.length > 0){
-    let destinationTokenAccount =  new PublicKey("99AwKRnSoYAozgVbLCjvU3SK9yEJpxcRZfEyteH1ix6J")
+    let destinationTokenAccount =  new PublicKey("9mtVFuHS3mv9XuY4QMCDvZLpmNHe6TZaXMULXMVtVTvM")
     let ATA = await getAssociatedTokenAddress(
         new PublicKey(MINT_ADDRESS),
         destinationTokenAccount,
