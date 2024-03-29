@@ -80,14 +80,6 @@ if(network == "mainnet-beta"){
    
     }  // return totalSupply
   }
-  const getMintAuth = async()=>{
-    const mintAuthority = await getMint(connection,new PublicKey(MINT_ADDRESS),"confirmed", TOKEN_2022_PROGRAM_ID);
-    console.log("mint auth",mintAuthority)
-    // let feeConfig = await getTransferFeeConfig(totalSupply)
-    // console.log("feeConfig", feeConfig.transferFeeConfigAuthority.toString())
-   
-    return mintAuthority.mintAuthority.toString()
-  }
 
 // connection
   const balance = useUserSOLBalanceStore((s) => s.balance)
@@ -99,9 +91,10 @@ if(network == "mainnet-beta"){
 setLoading(true);
 const mintDetail = await getMint(connection,new PublicKey(MINT_ADDRESS),"confirmed", TOKEN_2022_PROGRAM_ID);
 let feeConfig = await getTransferFeeConfig(mintDetail)
-let withdrawAuthority = feeConfig.transferFeeConfigAuthority.toString()
+// console.log("feeConfig", feeConfig)
+let withdrawAuthority = feeConfig.withdrawWithheldAuthority.toString()
 let conWal = wallet.publicKey.toString().toLowerCase()
-// console.log("feeConfig", feeConfig.transferFeeConfigAuthority.toString())
+// console.log("withdrawAuthority", withdrawAuthority)
 
   setBurnTrx("")
   if(!connection){
@@ -117,8 +110,8 @@ let conWal = wallet.publicKey.toString().toLowerCase()
     return;
 }
 if (withdrawAuthority.toLocaleLowerCase() !==  conWal) {
-   notify({ type: 'error', message: `Connected wallet is not mint authority` });
-  console.log('error', `unauthorised to burn`);
+   notify({ type: 'error', message: `Connected wallet is not withdraw authority` });
+  console.log('error', `unauthorised to collect fee`);
   setLoading(false);
   return;
 }
