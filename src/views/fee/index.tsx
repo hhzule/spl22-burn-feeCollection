@@ -33,9 +33,9 @@ import {
   NetworkConfigurationProvider,
   useNetworkConfiguration,
 } from "../../contexts/NetworkConfigurationProvider";
-// const MINT_ADDRESS = "D1fr23YLDXg1LZHAyMH8rak7NBqyCV5tR3wpzeQ3zdnU";
-const MINT_ADDRESS = "9vPDzcta5HhPfzXsJCY6MZmDFo6vZ6NDRXLXt6ibzpE9";
-const MINT_DECIMALS = 6; // Value for USDC-Dev from spl-token-faucet.com | replace with the no. decimals of mint you would like to burn
+
+const MINT_ADDRESS = "79zVteF3v2eqcP9X3XbxgPnQDNweUWQNMgQtEbDiPBmd";
+const MINT_DECIMALS = 9; // Value for USDC-Dev from spl-token-faucet.com | replace with the no. decimals of mint you would like to burn
 
 export const CollectFeeView: FC = ({}) => {
   const router = useRouter();
