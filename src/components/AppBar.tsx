@@ -7,7 +7,8 @@ import NetworkSwitcher from './NetworkSwitcher';
 import NavElement from './nav-element';
 import { useRouter } from 'next/router'; 
 // import { useParams } from 'next/navigation';
-import SOLSniffer from "./solsniffer.png"
+// import SOLSniffer from "./solsniffer.png"
+import Empa from "./empa.jpg"
 import Image from 'next/image';
 
 const WalletMultiButtonDynamic = dynamic(
@@ -26,8 +27,8 @@ export const AppBar: React.FC = () => {
       {/* NavBar / Header */}
       <div className="navbar flex h-20 flex-row md:mb-2 shadow-lg bg-black text-neutral-content border-b border-zinc-600 bg-opacity-66">
         <div className="navbar-start align-items-center">
-       <Image src={SOLSniffer }
-       alt="SOLSniffer Token"
+       <Image src={Empa }
+       alt="Empa Token"
        width={80}
        height={80}
        style={{borderRadius:"10px"}}
